@@ -28,6 +28,12 @@ struct AddView: View {
                     .keyboardType(.numberPad)
             }
             .navigationBarTitle("Add new expense")
+            .navigationBarItems(trailing: Button("Save") {
+                if let actualAmount = Int(amount) {
+                    let item = ExpenseItem(name: name, type: type, amount: actualAmount)
+                    expenses.items.append(item)
+                }
+            })
         }
     }
 }
