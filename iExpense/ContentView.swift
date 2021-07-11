@@ -11,7 +11,8 @@ class Expenses: ObservableObject {
     @Published var items = [ExpenseItem]()
 }
 
-struct ExpenseItem {
+struct ExpenseItem: Identifiable {
+    let id = UUID()
     let name: String
     let type: String
     let amount: Int
@@ -24,7 +25,7 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             List {
-                ForEach(expenses.items, id: \.name) { item in
+                ForEach(expenses.items) { item in
                     HStack {
                         VStack(alignment: .leading) {
                             Text(item.name).font(.headline)
