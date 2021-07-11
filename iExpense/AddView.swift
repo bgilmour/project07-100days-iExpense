@@ -12,6 +12,7 @@ struct AddView: View {
     @State private var name = ""
     @State private var type = "Personal"
     @State private var amount = ""
+    @State private var showAlert = false
     @Environment(\.presentationMode) var presentationMode
 
     static let types = ["Business", "Personal"]
@@ -34,8 +35,18 @@ struct AddView: View {
                     let item = ExpenseItem(name: name, type: type, amount: actualAmount)
                     expenses.items.append(item)
                     presentationMode.wrappedValue.dismiss()
+                } else {
+                    showAlert = true
                 }
             })
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text("Invalid amount"),
+                      message: Text("Please enter a whole number of dollars for the amount"),
+                      dismissButton: .default(Text("OK")) {
+                        amount = ""
+                      }
+                )
+            }
         }
     }
 }
