@@ -7,33 +7,51 @@
 
 import SwiftUI
 
-struct User: Codable {
-    var firstName: String
-    var lastName: String
+class Expenses: ObservableObject {
+    @Published var items = [ExpenseItem]()
+}
+
+struct ExpenseItem {
+    let name: String
+    let type: String
+    let amount: Int
 }
 
 struct ContentView: View {
-    @State private var count = 0
-    @State private var json = "Uninitialised"
+    @ObservedObject var expenses = Expenses()
+    @State private var amount = 0
 
     var body: some View {
-        VStack {
-            Button("Save User") {
-                count += 1
-                let user = User(firstName: "Taylor", lastName: "Swift\(count)")
-                let encoder = JSONEncoder()
-
-                if let data = try? encoder.encode(user) {
-                    UserDefaults.standard.set(data, forKey: "UserData")
+        NavigationView {
+            List {
+                ForEach(expenses.items, id: \.name) { item in
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text(item.name).font(.headline)
+                            Text(item.type).font(.subheadline)
+                        }
+                        Spacer()
+                        Text("$\(item.amount)")
+                    }
                 }
+                .onDelete(perform: removeItems)
             }
-            Button("Load Data") {
-                if let data = UserDefaults.standard.data(forKey: "UserData") {
-                    json = String(decoding: data, as: UTF8.self)
-                }
-            }
-            Text(json)
+            .navigationBarTitle("iExpense")
+            .navigationBarItems(
+                trailing:
+                    Button(action: {
+                        amount += 5
+                        let expense = ExpenseItem(name: "Test", type: "Personal", amount: amount)
+                        expenses.items.append(expense)
+                    }) {
+                        Image(systemName: "plus")
+                    }
+            )
         }
+    }
+
+    func removeItems(at offsets: IndexSet) {
+        expenses.items.remove(atOffsets: offsets)
     }
 }
 
