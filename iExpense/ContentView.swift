@@ -47,7 +47,7 @@ struct ContentView: View {
                     HStack {
                         VStack(alignment: .leading) {
                             Text(item.name).font(.headline)
-                            Text(item.type).font(.subheadline)
+                            Text(item.type)//.font(.subheadline)
                         }
                         Spacer()
                         Text("$\(item.amount)")
