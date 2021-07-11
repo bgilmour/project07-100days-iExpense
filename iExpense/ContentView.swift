@@ -46,11 +46,12 @@ struct ContentView: View {
                 ForEach(expenses.items) { item in
                     HStack {
                         VStack(alignment: .leading) {
-                            Text(item.name).font(.headline)
-                            Text(item.type)//.font(.subheadline)
+                            Text(item.name)
+                                .font(.headline)
+                            TypeTextView(item.type)
                         }
                         Spacer()
-                        Text("$\(item.amount)")
+                        AmountTextView(item.amount)
                     }
                 }
                 .onDelete(perform: removeItems)
@@ -73,6 +74,42 @@ struct ContentView: View {
 
     func removeItems(at offsets: IndexSet) {
         expenses.items.remove(atOffsets: offsets)
+    }
+}
+
+struct TypeTextView: View {
+    let type: String
+
+    init(_ type: String) {
+        self.type = type
+    }
+
+    var body: some View {
+        Text(type)
+            .foregroundColor(type == "Personal" ? .blue : .purple)
+    }
+}
+
+struct AmountTextView: View {
+    let amount: Int
+
+    init(_ amount: Int) {
+        self.amount = amount
+    }
+
+    var body: some View {
+        var color: Color = .red
+        var weight: Font.Weight = .bold
+        if amount < 10 {
+            color = .black
+            weight = .regular
+        } else if amount < 100 {
+            color = .yellow
+            weight = .semibold
+        }
+        return Text("$\(amount)")
+            .foregroundColor(color)
+            .fontWeight(weight)
     }
 }
 
